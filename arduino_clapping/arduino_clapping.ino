@@ -1,14 +1,18 @@
-#define MicSamples 1024
+/* 
+ Script for controlling an LED and relay based on clapping detected by a mic.
+ The relay can be connected to a power cord and can thus control existing light setups. 
+ 
+ Turns on/off the lights when clapping twice.
+ 
+ Components:
+ * Arduino Uno
+ * Relay
+ * Mic
+ * LED
+*/
+
+// mic
 #define MicPin A0
-
-// led
-int led = 9;           // the PWM pin the LED is attached to
-int brightness = 0;    // how bright the LED is
-int fadeAmount = 5;    // how many points to fade the LED by
-bool fade = false;
-bool lights_on = false;
-
-// mics
 const int sampleWindow = 6; // Sample window width in mS (50 mS = 20Hz)
 unsigned int sample;
 
@@ -17,12 +21,16 @@ int clapWindow = 20;
 int clap = 0;
 double clapThreshold = 1.5;
 
+// led
+int led = 9;           // the PWM pin the LED is attached to
+bool lights_on = false;
+
 // relay
 int relay_pin = 8;
 
 void setup() {
   pinMode(led, OUTPUT);
-  digitalWrite(led, LOW); // turn the LED off by making the voltage LOW
+  digitalWrite(led, LOW);
   lights_on = false;
 
   pinMode(relay_pin,OUTPUT);
@@ -92,26 +100,7 @@ void manageLights() {
     lights_on = false;
     }
   else {
-    /*if (fade) {
-      // set the brightness of pin 9:
-      analogWrite(led, brightness);
-    
-      // change the brightness for next time through the loop:
-      brightness = brightness + fadeAmount;
-    
-      // reverse the direction of the fading at the ends of the fade:
-      if (brightness <= 0 || brightness >= 255) {
-        fadeAmount = -fadeAmount;
-      }
-      // wait for 30 milliseconds to see the dimming effect
-      delay(30);
-    }
-    else {
-      digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-      delay(1000);                       // wait for a second
-      digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-      delay(1000);                       // wait for a second 
-    }*/
+    // turn on
     digitalWrite(led, HIGH); // turn the LED on (HIGH is the voltage level)
     digitalWrite(relay_pin, LOW);
     lights_on = true;
